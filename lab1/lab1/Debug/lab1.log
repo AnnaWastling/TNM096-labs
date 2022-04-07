@@ -1,0 +1,30 @@
+﻿  main.cpp
+  node.cpp
+C:\Users\annwa917\Documents\TNM096-labs\Lab 1\node.cpp(12,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\annwa917\Documents\TNM096-labs\Lab 1\node.cpp(78,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\annwa917\Documents\TNM096-labs\Lab 1\node.cpp(93,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\annwa917\Documents\TNM096-labs\Lab 1\node.cpp(111,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\annwa917\Documents\TNM096-labs\Lab 1\node.cpp(162,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\annwa917\Documents\TNM096-labs\Lab 1\node.cpp(167,9): warning C4456: declaration of 'i' hides previous local declaration
+C:\Users\annwa917\Documents\TNM096-labs\Lab 1\node.cpp(162,18): message : see declaration of 'i'
+C:\Users\annwa917\Documents\TNM096-labs\Lab 1\node.cpp(167,27): warning C4018: '<': signed/unsigned mismatch
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Tools\MSVC\14.29.30133\include\xutility(5307,21): error C2676: binary '==': 'State' does not define this operator or a conversion to a type acceptable to the predefined operator
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Tools\MSVC\14.29.30133\include\xutility(5342): message : see reference to function template instantiation '_InIt std::_Find_unchecked1<_InIt,_Ty>(_InIt,const _InIt,const _Ty &,std::false_type)' being compiled
+          with
+          [
+              _InIt=State *,
+              _Ty=State
+          ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Tools\MSVC\14.29.30133\include\xutility(5348): message : see reference to function template instantiation '_InIt std::_Find_unchecked<State*,_Ty>(const _InIt,const _InIt,const _Ty &)' being compiled
+          with
+          [
+              _InIt=State *,
+              _Ty=State
+          ]
+C:\Users\annwa917\Documents\TNM096-labs\Lab 1\node.cpp(168): message : see reference to function template instantiation '_InIt std::find<std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>,State>(_InIt,const _InIt,const _Ty &)' being compiled
+          with
+          [
+              _InIt=std::_Vector_iterator<std::_Vector_val<std::_Simple_types<State>>>,
+              _Ty=State
+          ]
+  Generating Code...

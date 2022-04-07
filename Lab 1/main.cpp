@@ -1,4 +1,4 @@
-#include "node.cpp"
+#include "node.h"
 
 int main()
 {
@@ -18,8 +18,20 @@ int main()
 
     Board board(current, zeroPos);
 
-    // board.print();
+
+    board.print();
     // board.print(board.getGoal());
+    //priority_queue<int, vector<int>, greater<int>> openList;
+
+    //const auto data = {8,5,2,1,4,3 };
+    //for (int n : data) {
+    //    openList.push(n);
+    //    cout<<(openList.top());
+
+    //}
+
+
+
 
     return 0;
 }
