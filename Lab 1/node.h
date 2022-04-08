@@ -10,7 +10,7 @@ class State
 public:
     State() = default;
     State(int puzzle[], int cost);
-
+    bool operator==(const State& s)const;
 
     int puzzleState[9] = { 0 }; // position of all 8 tiles
     int cost = 0;             // g, real cost from start to current position
@@ -21,7 +21,6 @@ public:
 //Function object that returns wheter the first argument is greater than the other see cplusplus std::greater
 struct compareStates {
     bool operator()(const State& ls, const State& rs) {
-
         return ls.evaluation > rs.evaluation;
     }
 };
@@ -37,7 +36,8 @@ public:
     int hamming();
     bool isGoal();
     void solveBoard(Board& b);
-    void moveZero(int move, State s);
+    void moveZero(int move);
+
 
 private:
     State goal;
@@ -47,16 +47,9 @@ private:
     // Create openList
     priority_queue<State, vector<State>, compareStates> openList; // with smallest value first
     // Closedlist
-    //best = hashtable but for now we use vector
-   // unordered_set<Board, > closedList;
     vector<State>closedList;
 };
 
 // Create moveFunction by swapping tiles
 
 // Update evaluation function
-
-// A* Seach algorithm
-// Expand first element in openList
-// save path
-//compare nodes f_values
