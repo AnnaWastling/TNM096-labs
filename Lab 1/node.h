@@ -30,7 +30,6 @@ class Board
 public:
     Board(State current, int zero);
     void print();
-    State getGoal();
     std::vector<int> allowedMoves();
     int manhattan();
     int hamming();

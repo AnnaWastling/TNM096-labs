@@ -1,6 +1,6 @@
 #include "node.h"
 State::State(int puzzle[], int cost) : cost{ cost } {
-	for (int i = 0; i < 8; i++) {
+	for (int i = 0; i < 9; i++) {
 		puzzleState[i] = puzzle[i];
 	}
 };
@@ -9,10 +9,11 @@ State::State(int puzzle[], int cost) : cost{ cost } {
 Board::Board(State curr, int zero) : zeroPos{ zero }
 {
 	// Define the goal state
-	for (int i = 0; i < size(goal.puzzleState); i++)
+	for (int i = 0; i < size(goal.puzzleState)-1; i++)
 	{
-		goal.puzzleState[i] = i;
+		goal.puzzleState[i] = i+1;
 	};
+	goal.puzzleState[8] = 0;
 
 	current = curr;
 };
@@ -24,12 +25,9 @@ void Board::print()
 	{
 		cout << index << endl;
 	}
+
 };
 
-State Board::getGoal()
-{
-	return goal;
-};
 
 std::vector<int> Board::allowedMoves()
 {
@@ -117,7 +115,7 @@ bool Board::isGoal() {
 }
 
 void Board::moveZero(int move) {
-	swap(zeroPos, current.puzzleState[move]);
+	swap(current.puzzleState[zeroPos], current.puzzleState[move]);
 	zeroPos = move;
 }
 
@@ -147,8 +145,11 @@ void Board::solveBoard(Board& b) {
 		State temp = openList.top();
 		//remove state from openlist
 		openList.pop();
+
 		//add to closed list
 		closedList.push_back(temp);
+
+		// goal don´t continue
 		if (b.isGoal()) {
 			cout << " Goal is found! " << endl;
 			cout << " The cost is: " << temp.cost << endl;
