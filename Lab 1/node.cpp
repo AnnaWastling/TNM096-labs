@@ -161,19 +161,15 @@ void Board::solveBoard(Board& b) {
 
 		for (int i = 0; i < moves.size(); i++) {
 			State newState = State(temp.puzzleState, temp.cost + 1);
-			//create a new board for the state, needed to update current
-			Board newBoard(newState, zeroPos);
-			newBoard.moveZero(moves[i]);
+			b.moveZero(moves[i]);
 
-
-			//need to be after because we use current i manhattan
-			newState.heuristic = newBoard.hamming();
+			newState.heuristic = b.hamming();
 			newState.evaluation = newState.cost + newState.heuristic;
 			//check if already exist in closed list
 			it = find(closedList.begin(), closedList.end(), newState);
-
 			//need to specify own operator==
 			if (it == closedList.end()) {
+				//never reaches this!!!!
 				openList.push(newState);
 
 			}
