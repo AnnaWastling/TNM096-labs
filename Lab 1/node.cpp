@@ -25,9 +25,15 @@ void Board::print()
 	{
 		cout << index << endl;
 	}
-
 };
 
+void Board::printPath() {
+	cout << "cost: " << current.cost << endl;
+	cout << current.puzzleState[0] << " " << current.puzzleState[1] << " " << current.puzzleState[2] << " " << endl;
+	cout << current.puzzleState[3] << " " << current.puzzleState[4] << " " << current.puzzleState[5] << " " << endl;
+	cout << current.puzzleState[6] << " " << current.puzzleState[7] << " " << current.puzzleState[8] << " " << endl<<endl<<endl;
+	
+}
 
 std::vector<int> Board::allowedMoves()
 {
@@ -69,13 +75,13 @@ std::vector<int> Board::allowedMoves()
 	return moves;
 };
 
-int Board::hamming()
+int Board::hamming(State& s)
 {
 	int heuristic = 0;
 
-	for (int i = 0; i < size(current.puzzleState); i++)
+	for (int i = 0; i < size(s.puzzleState); i++)
 	{
-		if (current.puzzleState[i] != goal.puzzleState[i])
+		if (s.puzzleState[i] != goal.puzzleState[i])
 		{
 			++heuristic;
 		}
@@ -84,13 +90,13 @@ int Board::hamming()
 	return heuristic;
 };
 
-int Board::manhattan()
+int Board::manhattan(State& s)
 {
 	int heuristic = 0;
 
-	for (int i = 0; i < size(current.puzzleState); i++)
+	for (int i = 0; i < size(s.puzzleState); i++)
 	{
-		if (current.puzzleState[i] != goal.puzzleState[i])
+		if (s.puzzleState[i] != goal.puzzleState[i])
 		{                        // if tile is in wrong place
 			int atCol = (i % 3); // ex. i = 4 gives 4 % 3 = 1, where the colums are [0,1,2]
 			int atRow = (i / 3); // ex. i = 4 gives 4 / 3 = 1.33.. = int 1, where the rows are [0,1,2]
@@ -114,18 +120,18 @@ bool Board::isGoal() {
 	return true;
 }
 
-void Board::moveZero(int move) {
-	swap(current.puzzleState[zeroPos], current.puzzleState[move]);
-	zeroPos = move;
+void Board::moveZero(int move, State& s) {
+	swap(s.puzzleState[zeroPos], s.puzzleState[move]);
+	//zeroPos = move;
+}
+
+void Board::findZero() {
+	for (int i = 0; i < size(current.puzzleState); i++) {
+		if (current.puzzleState[i] == 0) zeroPos = i;
+	}
 }
 
 void Board::solveBoard(Board& b) {
-	//1. expand first state/node in openlist
-	//2. check if state/node is in closedlist
-	//3. move state/node to closedlist
-	//4. add all states/nodes with possible moves to openlist
-	//5. get first state/node in openlist
-
 	/*from labassistent*/
 	//store path == closedlist
 	//zero is in last place
@@ -133,7 +139,7 @@ void Board::solveBoard(Board& b) {
 	// cost get larger the further down you get, add to cost at each level. do it in a star 
 
 	//add root state to the openlist
-	openList.push(b.current);
+	openList.push(current);
 	//heap to get states with smallest vlues at top
 	//make_heap(closedList.begin(), closedList.end());
 
@@ -141,35 +147,46 @@ void Board::solveBoard(Board& b) {
 	vector<int>moves;
 
 	while (!openList.empty()) {
-		//get smallest value state
-		State temp = openList.top();
+		//get smallest heuristic value state
+		current = openList.top();
+
+		//find the position of the zero
+		findZero();
+
+		//add to closed list
+		//current = expanded node
+		closedList.push_back(current);
+
+		//print current
+		printPath();
+
 		//remove state from openlist
 		openList.pop();
 
-		//add to closed list
-		closedList.push_back(temp);
-
 		// goal don´t continue
-		if (b.isGoal()) {
+		if (isGoal()) {
 			cout << " Goal is found! " << endl;
-			cout << " The cost is: " << temp.cost << endl;
-			b.print();
+			cout << " The cost is: " << current.cost << endl;
+			print();
 			break;
 		}
 
 		moves = allowedMoves();
 
 		for (int i = 0; i < moves.size(); i++) {
-			State newState = State(temp.puzzleState, temp.cost + 1);
-			b.moveZero(moves[i]);
+			//create new boards from the expanded node for every allowed move
+			State newState = State(current.puzzleState, current.cost + 1);
+			moveZero(moves[i], newState);
 
-			newState.heuristic = b.hamming();
+			//calculate heuristic
+			newState.heuristic = hamming(newState);
 			newState.evaluation = newState.cost + newState.heuristic;
+
 			//check if already exist in closed list
 			it = find(closedList.begin(), closedList.end(), newState);
 			//need to specify own operator==
 			if (it == closedList.end()) {
-				//never reaches this!!!!
+				//openlist sort by itself depending on heuristic (compare states)
 				openList.push(newState);
 
 			}

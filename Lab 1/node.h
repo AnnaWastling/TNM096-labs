@@ -31,11 +31,13 @@ public:
     Board(State current, int zero);
     void print();
     std::vector<int> allowedMoves();
-    int manhattan();
-    int hamming();
+    int manhattan(State& s);
+    int hamming(State& s);
     bool isGoal();
     void solveBoard(Board& b);
-    void moveZero(int move);
+    void moveZero(int move, State& s);
+    void findZero();
+    void printPath();
 
 
 private:
