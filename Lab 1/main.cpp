@@ -3,35 +3,25 @@
 int main()
 {
     // Define the start state, randomized
-    State start;
-    start.puzzleState[0] = 7;
-    start.puzzleState[1] = 2;
-    start.puzzleState[2] = 4;
-    start.puzzleState[3] = 5;
-    start.puzzleState[4] = 0;
-    start.puzzleState[5] = 6;
-    start.puzzleState[6] = 8;
-    start.puzzleState[7] = 3;
-    start.puzzleState[8] = 1;
-
-    int zeroPos = 4;
+    int easy[] = { 4,1,3,7,2,6,0,5,8 };
+    int medium[] = { 7,2,4,5,0,6,8,3,1 };
+    int difficult[] = { 6,4,7,8,5,0,3,2,1 };
+    int crazy[] = { 8,6,7,2,5,4,3,0,1 }; 
+   
+    State start = State(medium, 0);
+    int zeroPos = 5;
 
     Board board(start, zeroPos);
-
+    cout << "making board..." << endl;
+    auto startTime = high_resolution_clock::now();
     board.solveBoard(board);
+    auto stopTime = high_resolution_clock::now();
 
-    board.print();
-    //priority_queue<int, vector<int>, greater<int>> openList;
+    auto duration = duration_cast<microseconds>(stopTime - startTime);
 
-    //const auto data = {8,5,2,1,4,3 };
-    //for (int n : data) {
-    //    openList.push(n);
-    //    cout<<(openList.top());
-
-    //}
-
-
-
+    // To get the value of duration use the count()
+    // member function on the duration object
+    cout << "duration time: " << duration.count() << " microseconds" << endl;
 
     return 0;
 }

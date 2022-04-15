@@ -167,7 +167,7 @@ void Board::solveBoard(Board& b) {
 		if (isGoal()) {
 			cout << " Goal is found! " << endl;
 			cout << " The cost is: " << current.cost << endl;
-			print();
+			printPath();
 			break;
 		}
 
