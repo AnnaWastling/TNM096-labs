@@ -155,10 +155,16 @@ void Board::solveBoard(Board& b) {
 
 		//add to closed list
 		//current = expanded node
-		closedList.push_back(current);
-
-		//print current
-		printPath();
+		//auto startTime = high_resolution_clock::now();
+		it = find(closedList.begin(), closedList.end(), current);
+		//auto stopTime = high_resolution_clock::now();
+		//auto duration = duration_cast<microseconds>(stopTime - startTime);
+		//cout << "duration time for find: " << duration.count() << " micro seconds" << endl;
+		if (it == closedList.end()) {
+			closedList.push_back(current);
+			//print current
+			//printPath();
+		}
 
 		//remove state from openlist
 		openList.pop();
@@ -179,17 +185,22 @@ void Board::solveBoard(Board& b) {
 			moveZero(moves[i], newState);
 
 			//calculate heuristic
-			newState.heuristic = hamming(newState);
+			newState.heuristic = manhattan(newState);
 			newState.evaluation = newState.cost + newState.heuristic;
 
 			//check if already exist in closed list
-			it = find(closedList.begin(), closedList.end(), newState);
+			//it = find(closedList.begin(), closedList.end(), newState);
 			//need to specify own operator==
-			if (it == closedList.end()) {
-				//openlist sort by itself depending on heuristic (compare states)
-				openList.push(newState);
+			//if (it == closedList.end()) {
+			//	//openlist sort by itself depending on heuristic (compare states)
+			//	openList.push(newState);
 
-			}
+			//}
+/*			if (it != closedList.end() && it->evaluation < newState.evaluation) {
+
+				continue;
+			}*/				
+			openList.push(newState);
 		}
 	}
 

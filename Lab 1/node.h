@@ -18,12 +18,14 @@ public:
     int cost = 0;             // g, real cost from start to current position
     int heuristic = 0;        // h, expected cost from current to the goal state
     int evaluation = 0;       // f, cost + heuristic
+    string path = "";
 };
 
 //Function object that returns wheter the first argument is greater than the other see cplusplus std::greater
 struct compareStates {
     bool operator()(const State& ls, const State& rs) {
         return ls.evaluation > rs.evaluation;
+        //return ls.evaluation < rs.evaluation;
     }
 };
 
