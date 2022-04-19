@@ -1,5 +1,5 @@
 #include "node.h"
-State::State(int puzzle[], int cost) : cost{ cost } {
+State::State(int puzzle[], int cost, State* parent) : cost{ cost }, parent(parent) {
 	for (int i = 0; i < 9; i++) {
 		puzzleState[i] = puzzle[i];
 	}
@@ -149,31 +149,50 @@ void Board::solveBoard(Board& b) {
 	while (!openList.empty()) {
 		//get smallest heuristic value state
 		current = openList.top();
-
+		openList.pop();
 		//find the position of the zero
 		findZero();
 
 		//add to closed list
 		//current = expanded node
 		//auto startTime = high_resolution_clock::now();
-		it = find(closedList.begin(), closedList.end(), current);
+		if (closedList.find(current.key) != closedList.end()) {
+			//openList.pop();
+			continue;
+		}
+
+		closedList[current.key] = current;
+		//print current
+		//printPath();
+
+		//it = find(closedList.begin(), closedList.end(), current);
 		//auto stopTime = high_resolution_clock::now();
 		//auto duration = duration_cast<microseconds>(stopTime - startTime);
 		//cout << "duration time for find: " << duration.count() << " micro seconds" << endl;
-		if (it == closedList.end()) {
-			closedList.push_back(current);
+		//if (it == closedList.end()) {
+			//closedList.push_back(current);
 			//print current
 			//printPath();
-		}
+		//}
 
 		//remove state from openlist
-		openList.pop();
+		//openList.pop();
 
 		// goal don´t continue
 		if (isGoal()) {
 			cout << " Goal is found! " << endl;
 			cout << " The cost is: " << current.cost << endl;
 			printPath();
+
+			State* path = &current;
+			while (path) {
+				
+				cout << "|" << path->puzzleState[0] << ", " << path->puzzleState[1] << ", " << path->puzzleState[2] << "|\n";
+				cout << "|" << path->puzzleState[3] << ", " << path->puzzleState[4] << ", " << path->puzzleState[5] << "|\n";
+				cout << "|" << path->puzzleState[6] << ", " << path->puzzleState[7] << ", " << path->puzzleState[8] << "|\n\n";
+				path = path->parent;
+			}
+
 			break;
 		}
 
@@ -181,9 +200,9 @@ void Board::solveBoard(Board& b) {
 
 		for (int i = 0; i < moves.size(); i++) {
 			//create new boards from the expanded node for every allowed move
-			State newState = State(current.puzzleState, current.cost + 1);
+			State newState = State(current.puzzleState, current.cost + 1, &closedList[current.key]);
 			moveZero(moves[i], newState);
-
+			newState.setKey();
 			//calculate heuristic
 			newState.heuristic = manhattan(newState);
 			newState.evaluation = newState.cost + newState.heuristic;

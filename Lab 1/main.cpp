@@ -8,7 +8,8 @@ int main()
     int difficult1[] = { 6, 4, 7, 8, 5, 0, 3, 2, 1 };
     int difficult2[] = { 8, 6, 7, 2, 5, 4, 3, 0, 1 };
    
-    State start = State(difficult2, 0);
+    State start = State(difficult2, 0, nullptr);
+    start.setKey();
     int zeroPos = 7;
 
     Board board(start, zeroPos);

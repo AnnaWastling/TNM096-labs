@@ -4,6 +4,8 @@
 #include <iostream>
 #include  <unordered_set>
 #include <chrono>
+#include <map>
+#include <string>
 using namespace std;
 using namespace std::chrono;
 
@@ -11,14 +13,22 @@ class State
 {
 public:
     State() = default;
-    State(int puzzle[], int cost);
+    State(int puzzle[], int cost, State* parent);
     bool operator==(const State& s)const;
 
+    State* parent;
     int puzzleState[9] = { 0 }; // position of all 8 tiles
     int cost = 0;             // g, real cost from start to current position
     int heuristic = 0;        // h, expected cost from current to the goal state
     int evaluation = 0;       // f, cost + heuristic
-    string path = "";
+    string key = "k";
+
+    void setKey() {
+        for (int i = 0; i < 9; ++i) {
+
+            key += to_string(puzzleState[i]);
+        }
+    }
 };
 
 //Function object that returns wheter the first argument is greater than the other see cplusplus std::greater
@@ -52,7 +62,9 @@ private:
     // Create openList
     priority_queue<State, vector<State>, compareStates> openList; // with smallest value first
     // Closedlist
-    vector<State>closedList;
+    //vector<State>closedList;
+    map<string, State>closedList;
+    
 };
 
 // Create moveFunction by swapping tiles
