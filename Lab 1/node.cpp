@@ -132,16 +132,9 @@ void Board::findZero() {
 }
 
 void Board::solveBoard(Board& b) {
-	/*from labassistent*/
-	//store path == closedlist
-	//zero is in last place
-	// create new state for every possible movement
-	// cost get larger the further down you get, add to cost at each level. do it in a star 
 
 	//add root state to the openlist
 	openList.push(current);
-	//heap to get states with smallest vlues at top
-	//make_heap(closedList.begin(), closedList.end());
 
 	vector<State>::iterator it;
 	vector<int>moves;
@@ -149,43 +142,27 @@ void Board::solveBoard(Board& b) {
 	while (!openList.empty()) {
 		//get smallest heuristic value state
 		current = openList.top();
+		//remove state from openlist
 		openList.pop();
 		//find the position of the zero
 		findZero();
 
 		//add to closed list
 		//current = expanded node
-		//auto startTime = high_resolution_clock::now();
 		if (closedList.find(current.key) != closedList.end()) {
-			//openList.pop();
 			continue;
 		}
 
 		closedList[current.key] = current;
-		//print current
-		//printPath();
 
-		//it = find(closedList.begin(), closedList.end(), current);
-		//auto stopTime = high_resolution_clock::now();
-		//auto duration = duration_cast<microseconds>(stopTime - startTime);
-		//cout << "duration time for find: " << duration.count() << " micro seconds" << endl;
-		//if (it == closedList.end()) {
-			//closedList.push_back(current);
-			//print current
-			//printPath();
-		//}
-
-		//remove state from openlist
-		//openList.pop();
 
 		// goal don´t continue
 		if (isGoal()) {
 			cout << " Goal is found! " << endl;
 			cout << " The cost is: " << current.cost << endl;
-			printPath();
 
 			State* path = &current;
-			while (path) {
+			while (path) { //while path != nullptr
 				
 				cout << "|" << path->puzzleState[0] << ", " << path->puzzleState[1] << ", " << path->puzzleState[2] << "|\n";
 				cout << "|" << path->puzzleState[3] << ", " << path->puzzleState[4] << ", " << path->puzzleState[5] << "|\n";
@@ -206,19 +183,7 @@ void Board::solveBoard(Board& b) {
 			//calculate heuristic
 			newState.heuristic = manhattan(newState);
 			newState.evaluation = newState.cost + newState.heuristic;
-
-			//check if already exist in closed list
-			//it = find(closedList.begin(), closedList.end(), newState);
-			//need to specify own operator==
-			//if (it == closedList.end()) {
-			//	//openlist sort by itself depending on heuristic (compare states)
-			//	openList.push(newState);
-
-			//}
-/*			if (it != closedList.end() && it->evaluation < newState.evaluation) {
-
-				continue;
-			}*/				
+				
 			openList.push(newState);
 		}
 	}

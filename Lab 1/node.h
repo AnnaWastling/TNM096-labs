@@ -16,13 +16,14 @@ public:
     State(int puzzle[], int cost, State* parent);
     bool operator==(const State& s)const;
 
-    State* parent;
+    State* parent;              // for printing the path
     int puzzleState[9] = { 0 }; // position of all 8 tiles
     int cost = 0;             // g, real cost from start to current position
     int heuristic = 0;        // h, expected cost from current to the goal state
     int evaluation = 0;       // f, cost + heuristic
-    string key = "k";
+    string key = "k";         // For effective search in closedlist
 
+    //Make unique keys for all states by using puzzlestate
     void setKey() {
         for (int i = 0; i < 9; ++i) {
 
@@ -62,11 +63,7 @@ private:
     // Create openList
     priority_queue<State, vector<State>, compareStates> openList; // with smallest value first
     // Closedlist
-    //vector<State>closedList;
-    map<string, State>closedList;
+    //vector<State>closedList; // Vector is too slow!
+    map<string, State>closedList; //hashtable
     
 };
-
-// Create moveFunction by swapping tiles
-
-// Update evaluation function
