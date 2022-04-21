@@ -20,7 +20,6 @@ int main()
 
     auto duration = duration_cast<microseconds>(stopTime - startTime);
 
-    // To get the value of duration use the count()
     // member function on the duration object
     cout << "duration time: " << duration.count() << " micro seconds" << endl;
 

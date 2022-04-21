@@ -14,7 +14,7 @@ class State
 public:
     State() = default;
     State(int puzzle[], int cost, State* parent);
-    bool operator==(const State& s)const;
+    //bool operator==(const State& s)const;
 
     State* parent;              // for printing the path
     int puzzleState[9] = { 0 }; // position of all 8 tiles
@@ -36,7 +36,6 @@ public:
 struct compareStates {
     bool operator()(const State& ls, const State& rs) {
         return ls.evaluation > rs.evaluation;
-        //return ls.evaluation < rs.evaluation;
     }
 };
 
@@ -44,7 +43,6 @@ class Board
 {
 public:
     Board(State current, int zero);
-    void print();
     std::vector<int> allowedMoves();
     int manhattan(State& s);
     int hamming(State& s);
@@ -52,7 +50,6 @@ public:
     void solveBoard(Board& b);
     void moveZero(int move, State& s);
     void findZero();
-    void printPath();
 
 
 private:
@@ -62,8 +59,10 @@ private:
 
     // Create openList
     priority_queue<State, vector<State>, compareStates> openList; // with smallest value first
+
     // Closedlist
     //vector<State>closedList; // Vector is too slow!
+
     map<string, State>closedList; //hashtable
     
 };

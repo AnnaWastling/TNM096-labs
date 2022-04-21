@@ -18,23 +18,8 @@ Board::Board(State curr, int zero) : zeroPos{ zero }
 	current = curr;
 };
 
-void Board::print()
-{
-	cout << "The current state is" << endl;
-	for (auto index : current.puzzleState)
-	{
-		cout << index << endl;
-	}
-};
 
-void Board::printPath() {
-	cout << "cost: " << current.cost << endl;
-	cout << current.puzzleState[0] << " " << current.puzzleState[1] << " " << current.puzzleState[2] << " " << endl;
-	cout << current.puzzleState[3] << " " << current.puzzleState[4] << " " << current.puzzleState[5] << " " << endl;
-	cout << current.puzzleState[6] << " " << current.puzzleState[7] << " " << current.puzzleState[8] << " " << endl<<endl<<endl;
-	
-}
-
+//returns where on the board the empty tile is allowed to move
 std::vector<int> Board::allowedMoves()
 {
 	std::vector<int> moves;
@@ -75,6 +60,7 @@ std::vector<int> Board::allowedMoves()
 	return moves;
 };
 
+// Counts how many tiles are in the wrong place
 int Board::hamming(State& s)
 {
 	int heuristic = 0;
@@ -90,14 +76,15 @@ int Board::hamming(State& s)
 	return heuristic;
 };
 
+// Mesures the distance every tile is from it's goal position
 int Board::manhattan(State& s)
 {
 	int heuristic = 0;
 
 	for (int i = 0; i < size(s.puzzleState); i++)
 	{
-		if (s.puzzleState[i] != goal.puzzleState[i])
-		{                        // if tile is in wrong place
+		if (s.puzzleState[i] != goal.puzzleState[i])// if tile is in wrong place
+		{                        
 			int atCol = (i % 3); // ex. i = 4 gives 4 % 3 = 1, where the colums are [0,1,2]
 			int atRow = (i / 3); // ex. i = 4 gives 4 / 3 = 1.33.. = int 1, where the rows are [0,1,2]
 
@@ -111,6 +98,7 @@ int Board::manhattan(State& s)
 	return heuristic;
 }
 
+//Checks if we reach our goalstate
 bool Board::isGoal() {
 	for (int i = 0; i < size(current.puzzleState); i++) {
 		if (current.puzzleState[i] != goal.puzzleState[i]) {
@@ -120,53 +108,59 @@ bool Board::isGoal() {
 	return true;
 }
 
+//creates new states where the emptytile has been moved
 void Board::moveZero(int move, State& s) {
 	swap(s.puzzleState[zeroPos], s.puzzleState[move]);
-	//zeroPos = move;
 }
 
+//needed to find zero for the state we expand
+//can probably be saved somehow so we don´t need the loop
 void Board::findZero() {
 	for (int i = 0; i < size(current.puzzleState); i++) {
 		if (current.puzzleState[i] == 0) zeroPos = i;
 	}
 }
-
+// A* - algorithm
 void Board::solveBoard(Board& b) {
-
-	//add root state to the openlist
-	openList.push(current);
-
+	
 	vector<State>::iterator it;
 	vector<int>moves;
+	
+	//add root state to the openlist
+	openList.push(current);
 
 	while (!openList.empty()) {
 		//get smallest heuristic value state
 		current = openList.top();
+
 		//remove state from openlist
 		openList.pop();
+
 		//find the position of the zero
 		findZero();
 
-		//add to closed list
 		//current = expanded node
+		//if state is found in closed list start over from top of loop
 		if (closedList.find(current.key) != closedList.end()) {
 			continue;
 		}
-
+		//add to closed list
 		closedList[current.key] = current;
-
 
 		// goal don´t continue
 		if (isGoal()) {
 			cout << " Goal is found! " << endl;
 			cout << " The cost is: " << current.cost << endl;
 
+			//Here current is the goal state
 			State* path = &current;
 			while (path) { //while path != nullptr
 				
 				cout << "|" << path->puzzleState[0] << ", " << path->puzzleState[1] << ", " << path->puzzleState[2] << "|\n";
 				cout << "|" << path->puzzleState[3] << ", " << path->puzzleState[4] << ", " << path->puzzleState[5] << "|\n";
 				cout << "|" << path->puzzleState[6] << ", " << path->puzzleState[7] << ", " << path->puzzleState[8] << "|\n\n";
+
+				//move backwards from the goal state to the start state
 				path = path->parent;
 			}
 
@@ -178,8 +172,10 @@ void Board::solveBoard(Board& b) {
 		for (int i = 0; i < moves.size(); i++) {
 			//create new boards from the expanded node for every allowed move
 			State newState = State(current.puzzleState, current.cost + 1, &closedList[current.key]);
+
 			moveZero(moves[i], newState);
 			newState.setKey();
+
 			//calculate heuristic
 			newState.heuristic = manhattan(newState);
 			newState.evaluation = newState.cost + newState.heuristic;
@@ -190,14 +186,15 @@ void Board::solveBoard(Board& b) {
 
 }
 
-bool State::operator==(const State& s)const
-{
-	for (int i = 0; i < 9; i++)
-	{
-		if (puzzleState[i] != s.puzzleState[i])
-		{
-			return false;
-		}
-	}
-	return true;
-}
+// Used with vector
+//bool State::operator==(const State& s)const
+//{
+//	for (int i = 0; i < 9; i++)
+//	{
+//		if (puzzleState[i] != s.puzzleState[i])
+//		{
+//			return false;
+//		}
+//	}
+//	return true;
+//}
