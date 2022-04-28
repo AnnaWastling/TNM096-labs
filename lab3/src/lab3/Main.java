@@ -19,17 +19,35 @@ public class Main {
 		  Clauses E = new Clauses(sentence_e);
 		  Clauses F = new Clauses(sentence_f);
 		  
-		  Vector<Clauses> KB = new Vector<Clauses>(6);
+		  ArrayList<Clauses> KB = new ArrayList<Clauses>(6);
 		  KB.add(A);
 		  KB.add(B);
 		  KB.add(C);
 		  KB.add(D);
 		  KB.add(E);
 		  KB.add(F);
+		
+		  //String A = "a v b v ~c";
+		  //String B = "c v b";
+		  //String A = "a v b v ~c";
+		  //String B = "d v b v ~g";
+		  //String A = "~b v c v t";
+		  //String B = "~c v z v b";
+		
+		  //Clauses a = new Clauses(A);
+		  //Clauses b = new Clauses(B);
+		  
+		  //ArrayList<Clauses> KB = new ArrayList<Clauses>(2);
+		 // KB.add(a);
+		  //KB.add(b);
 		  
 		  Clauses res = new Clauses();
 		  
 		  res.CNF(KB);
+		  
+		  res.print();
+		  
+		  
 		  
 	  }
 
