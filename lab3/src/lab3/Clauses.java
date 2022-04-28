@@ -29,11 +29,19 @@ public class Clauses {
 		//System.out.println("Pos contains: " + pos);
 		//System.out.println("Neg contains: " + neg);
 		
+	}
+	
+	public Clauses CNF(Vector<Clauses> KB) {
+		Clauses C = new Clauses();
 		
 		
+		return null;
 		
 	}
 	
+	public Clauses Resolution(Clauses A, Clauses B) {
+		return null;
+	}
 	
 	
 }
