@@ -5,7 +5,7 @@ public class Main {
 	  
 	public static void main(String[] args) {
 		   
-		  String sentence_a = "~sun v ~money v ice";
+		  /*String sentence_a = "~sun v ~money v ice";
 		  String sentence_b = "~money v ice v movie";
 		  String sentence_c = "~movie v money";
 		  String sentence_d = "~movie v ~ice";
@@ -25,21 +25,21 @@ public class Main {
 		  KB.add(C);
 		  KB.add(D);
 		  KB.add(E);
-		  KB.add(F);
+		  KB.add(F);*/
 		
-		  //String A = "a v b v ~c";
-		  //String B = "c v b";
+		  String A = "a v b v ~c";
+		  String B = "c v b";
 		  //String A = "a v b v ~c";
 		  //String B = "d v b v ~g";
 		  //String A = "~b v c v t";
 		  //String B = "~c v z v b";
 		
-		  //Clauses a = new Clauses(A);
-		  //Clauses b = new Clauses(B);
+		  Clauses a = new Clauses(A);
+		  Clauses b = new Clauses(B);
 		  
-		  //ArrayList<Clauses> KB = new ArrayList<Clauses>(2);
-		 // KB.add(a);
-		  //KB.add(b);
+		  ArrayList<Clauses> KB = new ArrayList<Clauses>(2);
+		  KB.add(a);
+		  KB.add(b);
 		  
 		  Clauses res = new Clauses();
 		  
