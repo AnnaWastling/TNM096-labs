@@ -2,6 +2,12 @@ package lab3;
 import java.util.*;
 import org.apache.commons.collections4.CollectionUtils;
 
+//A tautology is when there is a c and not c in the same claus, for example A = a v b v c v -c
+//Then that whole claus is remove.
+//A tautology is not when there is a c and a not c after the resolution step??? Did not get it!
+//He said now: "then also remove the claus"
+//If duplicates in C (resoultion of A and B) then remove duplicates.
+
 public class Clauses {
 	public ArrayList<String> pos = new ArrayList<String>();
 	public ArrayList<String> neg = new ArrayList<String>();
@@ -33,7 +39,7 @@ public class Clauses {
 	}
 	
 	public ArrayList<Clauses> CNF(ArrayList<Clauses> KB) {
-		
+	
 		ArrayList<Clauses> KBprim = new ArrayList<Clauses>();
 		ArrayList<Clauses> S;
 		Clauses C = new Clauses();
