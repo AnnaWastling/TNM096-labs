@@ -32,23 +32,29 @@ public class Clauses {
 				pos.add(s);
 			}
 		};
-		
-		System.out.println("Pos contains: " + pos);
-		System.out.println("Neg contains: " + neg);
+
+		//System.out.println("Pos contains: " + pos);
+		//System.out.println("Neg contains: " + neg);
 		
 	}
 	
 	public ArrayList<Clauses> CNF(ArrayList<Clauses> KB) {
 	
 		ArrayList<Clauses> KBprim = new ArrayList<Clauses>();
-		ArrayList<Clauses> S;
+		ArrayList<Clauses> S = new ArrayList<Clauses>();
 		Clauses C = new Clauses();
+
+		S = new ArrayList<Clauses>(KB);
+		KB = new ArrayList<Clauses>();
+		KB = Incorporate(S,KB);
+
 				// While KB is still updating
 				while(!KBprim.equals(KB)) {
 					
 					//KB, S and C needs to be reset every loop
 					KBprim = new ArrayList<Clauses>(KB);
-					S = new ArrayList<Clauses>();
+				
+					//S = new ArrayList<Clauses>();
 					//C = new Clauses();
 					
 					for(int i = 0; i < KB.size()-1; i++) {
@@ -62,8 +68,8 @@ public class Clauses {
 							
 							if(C != null) {
 								S.add(C);
-								System.out.println("C Before Pos contains: " + C.pos);
-								System.out.println("C Before Neg contains: " + C.neg);
+								//System.out.println("C Before Pos contains: " + C.pos);
+								//System.out.println("C Before Neg contains: " + C.neg);
 								C.print();
 							}
 							else {
@@ -85,11 +91,11 @@ public class Clauses {
 					if(S.isEmpty()) {
 											
 						return KB; 
-					}				
-					//Update KB with S
+					}			
 					
+					//Update KB with S
 					KB = Incorporate(S, KB);
-					KB= RemoveDuplicates(KB);
+					//KB = RemoveDuplicates(KB);
 				}
 		//S not empty what does this mean?
 		return null;
@@ -104,44 +110,43 @@ public class Clauses {
 		}// if intersection is not empty
 		if(!Collections.disjoint(A.pos, B.neg)) {
 			ArrayList<String> random_element_B = (ArrayList<String>) CollectionUtils.intersection(A.pos, B.neg);
-			System.out.println("Intersection A pos: " + A.pos);
-			System.out.println("Intersection B neg: " + B.neg);
+			//System.out.println("Intersection A pos: " + A.pos);
+			//System.out.println("Intersection B neg: " + B.neg);
 			A.pos.remove(random_element_B.get(0));
 			B.neg.remove(random_element_B.get(0));
-			System.out.println("Intersection A pos: " + A.pos);
-			System.out.println("Intersection B neg: " + B.neg);
+
 
 			
 		}else {
-			System.out.println("Intersection A neg: " + A.neg);
-			System.out.println("Intersection B pos: " + B.pos);
+			//System.out.println("Intersection A neg: " + A.neg);
+			//System.out.println("Intersection B pos: " + B.pos);
 			ArrayList<String> random_element_A = (ArrayList<String>) CollectionUtils.intersection(A.neg, B.pos);
 			A.neg.remove(random_element_A.get(0));
 			B.pos.remove(random_element_A.get(0));
-			System.out.println("Intersection A neg: " + A.neg);
-			System.out.println("Intersection B pos: " + B.pos);
+			//System.out.println("Intersection A neg: " + A.neg);
+			//System.out.println("Intersection B pos: " + B.pos);
 		}
 		C.pos = (ArrayList<String>) CollectionUtils.union(A.pos, B.pos);
 		C.neg = (ArrayList<String>) CollectionUtils.union(A.neg, B.neg);
-		System.out.println("C Before Pos contains: " + C.pos);
-		System.out.println("C Before Neg contains: " + C.neg);
+		//System.out.println("C Before Pos contains: " + C.pos);
+		//System.out.println("C Before Neg contains: " + C.neg);
 		//make union in C 
 		//ArrayList<String> C_union = (ArrayList<String>) CollectionUtils.union(C.pos, C.neg);
 		//remove duplicates in C (the strings in C "a v b v ~c")
 		//Clauses C;
 		
-		if(!Collections.disjoint(C.pos, C.neg)) { //C.pos and C.neg has common literals
+		if(!Collections.disjoint(C.pos, C.neg)) { //C.pos and C.neg has common literals, C is a tautology
 			return null;
 		}	
 
-		//C = RemoveDuplicates(C);
+		C = RemoveDuplicates(C);
 
 		
 	
 		return C;
 	}
 	
-	public ArrayList<Clauses> RemoveDuplicates(ArrayList<Clauses> KB){
+	/*public ArrayList<Clauses> RemoveDuplicates(ArrayList<Clauses> KB){
 		ArrayList<Clauses> temp = new ArrayList<Clauses>(KB);
 		for(int i = 0; i < KB.size()-1; i++) {
 			if(KB.get(i).equal(KB.get(i+1))) {
@@ -149,38 +154,73 @@ public class Clauses {
 			}
 		}
 		return temp;
-	}
+	}*/
 	
-	/*public Clauses RemoveDuplicates(Clauses C) {
-		for(int i = 0; i< C.pos.size()-1; i++ ) {
+	public Clauses RemoveDuplicates(Clauses C) {
+
+		    // Function to remove duplicates from an ArrayList
+  
+        // Create a new ArrayList
+        ArrayList<String> newPos = new ArrayList<String>();
+				ArrayList<String> newNeg = new ArrayList<String>();
+
+        // Traverse through the first list
+        for (String pos_element : C.pos) {
+						// If this element is not present in newList
+            // then add it
+            if (!newPos.contains(pos_element)) {
+                newPos.add(pos_element);
+            }
+        }
+
+
+				for (String neg_element : C.neg) {
+  
+            // If this element is not present in newList
+            // then add it
+            if (!newNeg.contains(neg_element)) {
+  
+                newNeg.add(neg_element);
+            }
+        }
+  
+        // return the new list
+				Clauses newClaus = new Clauses();
+				newClaus.pos = newPos;
+				newClaus.neg = newNeg;
+
+        return newClaus;
+    
+		/*for(int i = 0; i < C.pos.size()-1; i++ ) {
 			for(int j=i+1; j < C.pos.size(); j++) {
 				if(C.pos.get(i).equals(C.pos.get(j))) {
-					C.pos.remove(j);
+					C.pos.remove(i);
 				}
 			}
 		}
 		
-		for(int i = 0; i< C.neg.size()-1; i++ ) {
+		for(int i = 0; i < C.neg.size()-1; i++ ) {
 			for(int j=i+1; j < C.neg.size(); j++) {
 				if(C.neg.get(i).equals(C.neg.get(j))) {
-					C.neg.remove(j);
+					C.neg.remove(i);
 				}
 			}
-		}
+		}*/
 		
-		/*for(int i = 0; i< C.pos.size(); i++ ) {
-			for(int j=0; j< C.neg.size(); j++) {
+		/*for(int i = 0; i < C.pos.size(); i++ ) {
+			for(int j=0; j < C.neg.size(); j++) {
 				if(C.neg.get(j).equals(C.pos.get(i))) {
 					C.neg.remove(j);
 					C.pos.remove(i);
 				}
 			}
 		}*/
+
 		//remove duplicates in 
 		//Clauses C = new Clauses();
-		//return C;*/
+		//return C;
 		
-	//}
+	};
 	
 	public boolean equal(Clauses rhs) {
 		if (rhs == null) return false;
@@ -202,8 +242,11 @@ public class Clauses {
 	public ArrayList<Clauses> Incorporate(ArrayList<Clauses>S,ArrayList<Clauses> KB){
 		
 		//for(Clauses A : S) {
-		for(int i = 0; i < KB.size(); i++) {
-			KB = Incorporate_clause(KB.get(i), KB);
+		//for(int i = 0; i < KB.size(); i++) {
+		//	KB = Incorporate_clause(KB.get(i), KB);
+		//}
+		for (Clauses A : S){
+			KB = Incorporate_clause(A, KB);
 		}
 		
 		//Clauses C = new Clauses();
@@ -225,7 +268,7 @@ public class Clauses {
 	}
 	
 	public ArrayList<Clauses> Incorporate_clause(Clauses A,ArrayList<Clauses> KB){
-		for(int i = 0; i < KB.size(); i++) {
+		/*for(int i = 0; i < KB.size(); i++) {
 			
 			if(isSubsetOf(A, KB.get(i))) {
 				KB.remove(KB.get(i));
@@ -236,16 +279,31 @@ public class Clauses {
 
 		}
 		KB.add(A);
+		return KB;*/
+		for(Clauses B : KB){
+			if(isSubsetOf(B, A)){
+				return KB;
+			}
+		}
+
+		for(Clauses B : KB){
+			if(isSubsetOf(A, B)){ //A is a subset of B, A have all knowledge of B but B has additional
+				KB.remove(B); //Remove B, since B can be an "or" but A says what is true, so we want the one with least "ors"
+			}
+		}
+		KB.add(A); //New knowledge we add
 		return KB;
+
 	}
 	
 	public boolean isSubsetOf(Clauses lhs, Clauses rhs) {
+		boolean subset = false;
 		if(CollectionUtils.isSubCollection(lhs.pos, rhs.pos)) {
 			if (CollectionUtils.isSubCollection(lhs.neg, rhs.neg)){
-				return true;
+				subset = true;
 			}
 		}
-		return false;
+		return subset;
 	}
 	
 	public void print() {
@@ -262,9 +320,6 @@ public class Clauses {
 		for (String l:neg) {
 		printString +="~" + l;
 		}	
-		
-
-		
 		
 		System.out.println(printString);
 	}
