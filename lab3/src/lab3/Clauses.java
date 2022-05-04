@@ -16,9 +16,14 @@ public class Clauses {
 	public Clauses() {
 		pos.add("");
 		neg.add("");
+		//pos = new ArrayList<String>();
+    //neg = new ArrayList<String>();
 	}
 	// Create a clause from a sentence
 	public Clauses(String sentence) {
+		//pos = new ArrayList<String>();
+    //neg = new ArrayList<String>();
+
 		String[] splitSentence;
 		
 		splitSentence = sentence.split(" ");
@@ -32,20 +37,25 @@ public class Clauses {
 				pos.add(s);
 			}
 		};
-
-		//System.out.println("Pos contains: " + pos);
-		//System.out.println("Neg contains: " + neg);
 		
 	}
-	
+
+	public Clauses(Clauses copy)
+  {
+        this.pos = (ArrayList<String>) copy.pos.clone();
+        this.neg = (ArrayList<String>) copy.neg.clone();
+  };
+
 	public ArrayList<Clauses> CNF(ArrayList<Clauses> KB) {
 	
 		ArrayList<Clauses> KBprim = new ArrayList<Clauses>();
 		ArrayList<Clauses> S = new ArrayList<Clauses>();
-		Clauses C = new Clauses();
+		Clauses C;//new Clauses();
+    Clauses A;
+    Clauses B;
 
 		S = new ArrayList<Clauses>(KB);
-		KB = new ArrayList<Clauses>();
+		KB.clear();
 		KB = Incorporate(S,KB);
 
 				// While KB is still updating
@@ -54,48 +64,36 @@ public class Clauses {
 					//KB, S and C needs to be reset every loop
 					KBprim = new ArrayList<Clauses>(KB);
 				
-					//S = new ArrayList<Clauses>();
-					//C = new Clauses();
+					S.clear();
+					C = new Clauses();
 					
 					for(int i = 0; i < KB.size()-1; i++) {
 						for(int j = i+1; j < KB.size(); j++) {
 
+							A = new Clauses(KB.get(i));
+              B = new Clauses(KB.get(j));
+
 							//Resolutionen return the resolvent of A and B
-							C = Resolution(KB.get(i), KB.get(j));
-							//KB.get(j).print();
-							//System.out.println("C Pos contains: " + C.pos);
-							//System.out.println("C Neg contains: " + C.neg);
+							C = Resolution(A, B);
 							
 							if(C != null) {
 								S.add(C);
-								//System.out.println("C Before Pos contains: " + C.pos);
-								//System.out.println("C Before Neg contains: " + C.neg);
-								C.print();
+								//C.print();
 							}
 							else {
 								System.out.println("false");
 							}
 						}
 					}
-					for(Clauses s: S) {
-						//System.out.println("S Pos contains: " + s.pos);
-						//System.out.println("S Neg contains: " + s.neg);
-					}
-					
-					for(Clauses kb: KB) {
-						//System.out.println("KB Pos contains: " + kb.pos);
-						//System.out.println("KB Neg contains: " + kb.neg);
-					}
 					
 					//Done
-					if(S.isEmpty()) {
-											
+					if(S.isEmpty()) {				
 						return KB; 
 					}			
 					
 					//Update KB with S
 					KB = Incorporate(S, KB);
-					//KB = RemoveDuplicates(KB);
+					KB = RemoveDuplicates(KB);
 				}
 		//S not empty what does this mean?
 		return null;
@@ -104,32 +102,29 @@ public class Clauses {
 	
 	public Clauses Resolution(Clauses A, Clauses B) {
 		Clauses C = new Clauses();
+
 		// No common clauses, the intersection is empty
 		if(Collections.disjoint(A.pos, B.neg) && Collections.disjoint(A.neg, B.pos) ) {
 			return null;
-		}// if intersection is not empty
+			//A = "~movie v money" B = "~movie v ~ice" gives null, should it keep ~movie?
+			//A = "~movie v money" B = "sun v money v cry" gives null?
+		}
+		
+		// if intersection is not empty
 		if(!Collections.disjoint(A.pos, B.neg)) {
 			ArrayList<String> random_element_B = (ArrayList<String>) CollectionUtils.intersection(A.pos, B.neg);
-			//System.out.println("Intersection A pos: " + A.pos);
-			//System.out.println("Intersection B neg: " + B.neg);
 			A.pos.remove(random_element_B.get(0));
 			B.neg.remove(random_element_B.get(0));
-
-
-			
+	
 		}else {
-			//System.out.println("Intersection A neg: " + A.neg);
-			//System.out.println("Intersection B pos: " + B.pos);
 			ArrayList<String> random_element_A = (ArrayList<String>) CollectionUtils.intersection(A.neg, B.pos);
 			A.neg.remove(random_element_A.get(0));
 			B.pos.remove(random_element_A.get(0));
-			//System.out.println("Intersection A neg: " + A.neg);
-			//System.out.println("Intersection B pos: " + B.pos);
 		}
+
 		C.pos = (ArrayList<String>) CollectionUtils.union(A.pos, B.pos);
 		C.neg = (ArrayList<String>) CollectionUtils.union(A.neg, B.neg);
-		//System.out.println("C Before Pos contains: " + C.pos);
-		//System.out.println("C Before Neg contains: " + C.neg);
+
 		//make union in C 
 		//ArrayList<String> C_union = (ArrayList<String>) CollectionUtils.union(C.pos, C.neg);
 		//remove duplicates in C (the strings in C "a v b v ~c")
@@ -140,13 +135,11 @@ public class Clauses {
 		}	
 
 		C = RemoveDuplicates(C);
-
-		
 	
 		return C;
 	}
 	
-	/*public ArrayList<Clauses> RemoveDuplicates(ArrayList<Clauses> KB){
+	public ArrayList<Clauses> RemoveDuplicates(ArrayList<Clauses> KB){
 		ArrayList<Clauses> temp = new ArrayList<Clauses>(KB);
 		for(int i = 0; i < KB.size()-1; i++) {
 			if(KB.get(i).equal(KB.get(i+1))) {
@@ -154,12 +147,11 @@ public class Clauses {
 			}
 		}
 		return temp;
-	}*/
+	}
 	
 	public Clauses RemoveDuplicates(Clauses C) {
 
 		    // Function to remove duplicates from an ArrayList
-  
         // Create a new ArrayList
         ArrayList<String> newPos = new ArrayList<String>();
 				ArrayList<String> newNeg = new ArrayList<String>();
@@ -240,46 +232,16 @@ public class Clauses {
 	}
 	
 	public ArrayList<Clauses> Incorporate(ArrayList<Clauses>S,ArrayList<Clauses> KB){
-		
-		//for(Clauses A : S) {
-		//for(int i = 0; i < KB.size(); i++) {
-		//	KB = Incorporate_clause(KB.get(i), KB);
-		//}
+
 		for (Clauses A : S){
 			KB = Incorporate_clause(A, KB);
-		}
-		
-		//Clauses C = new Clauses();
-		
-		for(Clauses kb : KB) {
-			//System.out.println("Before: " + kb.pos);
-			//System.out.println("Before: " + kb.neg);
-		}
-		
-		
-		//KB = Incorporate_clause(C,KB);
-		
-		for(Clauses kb : KB) {
-			//System.out.println("After: " + kb.pos);
-			//System.out.println("After: " + kb.neg);
 		}
 		
 		return KB;
 	}
 	
 	public ArrayList<Clauses> Incorporate_clause(Clauses A,ArrayList<Clauses> KB){
-		/*for(int i = 0; i < KB.size(); i++) {
-			
-			if(isSubsetOf(A, KB.get(i))) {
-				KB.remove(KB.get(i));
-			}
-			else if(isSubsetOf(KB.get(i), A)) {
-				return KB;
-			}
 
-		}
-		KB.add(A);
-		return KB;*/
 		for(Clauses B : KB){
 			if(isSubsetOf(B, A)){
 				return KB;
