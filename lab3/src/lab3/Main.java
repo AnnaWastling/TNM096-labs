@@ -6,22 +6,23 @@ public class Main {
 	public static void main(String[] args) {
 		   
 		  String sentence_a = "~sun v ~money v ice";
-		  //String sentence_b = "~money v ice v movie"; //Should not be included!!
+		  String sentence_b = "~money v ice v movie"; //Should not be included!!
 		  String sentence_c = "~movie v money";
 		  String sentence_d = "~movie v ~ice";
-		  String sentence_e = "sun v money v cry";
-		  String sentence_f = "movie";
+		  String sentence_e = "movie";
+		  String sentence_f = "sun v money v cry";
+
 		  
 		  Clauses A = new Clauses(sentence_a);
-		  //Clauses B = new Clauses(sentence_b);
+		  Clauses B = new Clauses(sentence_b);
 		  Clauses C = new Clauses(sentence_c);
 		  Clauses D = new Clauses(sentence_d);
 		  Clauses E = new Clauses(sentence_e);
 		  Clauses F = new Clauses(sentence_f);
 		  
-		  ArrayList<Clauses> KB = new ArrayList<Clauses>(5);
+		  ArrayList<Clauses> KB = new ArrayList<Clauses>(6);
 		  KB.add(A);
-		  //KB.add(B);
+		  KB.add(B);
 		  KB.add(C);
 		  KB.add(D);
 		  KB.add(E);
@@ -44,9 +45,8 @@ public class Main {
 		  Clauses res = new Clauses();
 			ArrayList<Clauses> result = new ArrayList<Clauses>();
 
-		  
+			
 		  result = res.CNF(KB);
-
 			if (result == null){
 				System.out.println("Result is empty");
 			}
