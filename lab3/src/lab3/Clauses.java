@@ -17,19 +17,12 @@ public class Clauses {
 	public Clauses() {
 		pos.add("");
 		neg.add("");
-		// pos = new ArrayList<String>();
-		// neg = new ArrayList<String>();
 	}
 
 	// Create a clause from a sentence
 	public Clauses(String sentence) {
-		// pos = new ArrayList<String>();
-		// neg = new ArrayList<String>();
-
 		String[] splitSentence;
-
 		splitSentence = sentence.split(" ");
-
 		for (String s : splitSentence) {
 			if (s.startsWith("~")) {
 				neg.add(s.replace("~", ""));
@@ -57,7 +50,7 @@ public class Clauses {
 
 		S = new ArrayList<Clauses>(KB);
 		KB.clear();
-		KB = Incorporate(S,KB);
+		KB = Incorporate(S, KB);
 
 		// While KB is still updating
 		while (!KBprim.equals(KB)) {
@@ -79,7 +72,6 @@ public class Clauses {
 
 					if (C != null) {
 						S.add(C);
-						// C.print();
 					} else {
 						// System.out.println("false");
 					}
@@ -92,9 +84,7 @@ public class Clauses {
 			// Update KB with S
 			KB = Incorporate(S, KB);
 			KB = RemoveDuplicates(KB);
-			// for(Clauses i:KB){
-			// i.print();
-			// }
+
 		}
 		// S not empty what does this mean?
 		return null;
@@ -107,8 +97,6 @@ public class Clauses {
 		// No common clauses, the intersection is empty
 		if (Collections.disjoint(A.pos, B.neg) && Collections.disjoint(A.neg, B.pos)) {
 			return null;
-			// A = "~movie v money" B = "~movie v ~ice" gives null, should it keep ~movie?
-			// A = "~movie v money" B = "sun v money v cry" gives null?
 		}
 
 		// if intersection is not empty
@@ -126,16 +114,10 @@ public class Clauses {
 		C.pos = (ArrayList<String>) CollectionUtils.union(A.pos, B.pos);
 		C.neg = (ArrayList<String>) CollectionUtils.union(A.neg, B.neg);
 
-		// make union in C
-		// ArrayList<String> C_union = (ArrayList<String>) CollectionUtils.union(C.pos,
-		// C.neg);
-		// remove duplicates in C (the strings in C "a v b v ~c")
-		// Clauses C;
-
 		if (!Collections.disjoint(C.pos, C.neg)) { // C.pos and C.neg has common literals, C is a tautology
 			return null;
 		}
-		//C = RemoveDuplicates(C);
+		// C = RemoveDuplicates(C);
 		return C;
 	}
 
@@ -181,39 +163,6 @@ public class Clauses {
 
 		return newClaus;
 
-		/*
-		 * for(int i = 0; i < C.pos.size()-1; i++ ) {
-		 * for(int j=i+1; j < C.pos.size(); j++) {
-		 * if(C.pos.get(i).equals(C.pos.get(j))) {
-		 * C.pos.remove(i);
-		 * }
-		 * }
-		 * }
-		 * 
-		 * for(int i = 0; i < C.neg.size()-1; i++ ) {
-		 * for(int j=i+1; j < C.neg.size(); j++) {
-		 * if(C.neg.get(i).equals(C.neg.get(j))) {
-		 * C.neg.remove(i);
-		 * }
-		 * }
-		 * }
-		 */
-
-		/*
-		 * for(int i = 0; i < C.pos.size(); i++ ) {
-		 * for(int j=0; j < C.neg.size(); j++) {
-		 * if(C.neg.get(j).equals(C.pos.get(i))) {
-		 * C.neg.remove(j);
-		 * C.pos.remove(i);
-		 * }
-		 * }
-		 * }
-		 */
-
-		// remove duplicates in
-		// Clauses C = new Clauses();
-		// return C;
-
 	};
 
 	public boolean equal(Clauses rhs) {
@@ -245,13 +194,10 @@ public class Clauses {
 
 	public ArrayList<Clauses> Incorporate_clause(Clauses A, ArrayList<Clauses> KB) {
 		int KBSize = KB.size();
-		// for(Clauses B : KB){
 		for (int i = 0; i < KBSize; i++) {
 			if (isSubsetOf(KB.get(i), A)) {
 				return KB;
 			}
-			// }
-			// for(Clauses B : KB){
 			if (isSubsetOf(A, KB.get(i))) { // A is a subset of B, A have all knowledge of B but B has additional
 				KB.remove(KB.get(i)); // Remove B, since B can be an "or" but A says what is true, so we want the one
 										// with least "ors"
@@ -274,32 +220,6 @@ public class Clauses {
 		}
 		return subset;
 	}
-	// public boolean isSubsetOf(Clauses lhs, Clauses rhs) {
-	// boolean subset = false;
-
-	// for(String i:lhs.pos){
-	// subset = false;
-	// for(String j:rhs.pos){
-	// if(i.equals(j)){
-	// subset = true;
-	// break;
-	// }
-	// }
-	// }
-	// if(!subset)return false;
-
-	// for(String i:lhs.neg){
-	// subset = false;
-	// for(String j:rhs.neg){
-	// if(i.equals(j)){
-	// subset = true;
-	// break;
-	// }
-	// }
-	// }
-	// if(!subset)return false;
-	// return true;
-	// }
 
 	public void print() {
 		String printString = "";
