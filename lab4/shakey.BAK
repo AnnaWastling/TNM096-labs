@@ -3,33 +3,54 @@
 %actions
 %go(x,y)
 act(go(X,Y),
-[location(X), location(Y), door(X,Y), shakey(X)],
+[location(X), location(Y), door(X,Y), shakey(X), on(floor)],
 [],
-[shakey(Y)],
+[shakey(Y)]
 ).
 
 %push(b,x,y)
 act(push(B,X,Y),
-[box(B), ],
+[box(B), boxpos(B,X), door(X,Y), shakey(X), location(X), location(Y), handEmpty, switch(S), switchPos(S,X), switched(S,on), on(floor) ],
+[boxpos(B,X),shakey(X), handEmpty],
+[shakey(Y), boxpos(B,Y)]
 ).
 %predicate box(...)
 %lightOn=true for shakey to find a box
 %shakey must climb onto box to switch lightswitch
 %climbUp(b)
-act(climbUp(B),[]).
+act(climbUp(B),
+[location(X), switch(S,on), on(floor), box(B), boxPos(B, X)],
+[on(floor)],
+[on(B)]
+).
 %climbDown(B)
-act(climbDown(B),[]).
+act(climbDown(B),
+[box(B), on(B)],
+[on(B)],
+[on(floor)]
+).
 %turnOn(s)
 act(turnOn(S),
-[],
-[],
-[]
+[location(X), box(B), switch(S,off), on(B)],
+[switch(S,X,off)],
+[switch(S,X,on)]
 ).
 %turnOff(s)
-act(turnOff(S),[]).
+act(turnOff(S),
+[location(X), box(B), switch(S,on), on(B)],
+[switch(S,on)],
+[switch(S,off)]
+).
 %States
-goal_state([location(room1)])
+goal_state(
+[shakey(room1)]
+).
+
 initial_state([
+shakey(room3),
+floor,
+on(floor),
+
 box(a),
 box(b),
 box(c),
@@ -38,32 +59,26 @@ boxPos(a, room1),
 boxPos(b, room1),
 boxPos(c, room1),
 boxPos(d, room1),
-diff(a,b),
-diff(a,c),
-diff(a,d),
-diff(b,a),
-diff(b,c),
-diff(b,d),
-diff(c,a),
-diff(c,b),
-diff(c,d),
-diff(d,a),
-diff(d,b),
-diff(d,d),
-switch1(on),
-switch2(off),
-switch3(off),
-switch4(on),
-switch(one,room1),
-switch(two,room2),
-switch(three,room3),
-switch(four,room4),
+handEmpty,
+
+switch(one),
+switch(two),
+switch(three),
+switch(four),
+switched(one, on),
+switched(two, off),
+switched(three, off),
+switched(four, on),
+switchPos(one, room1),
+switchPos(two, room2),
+switchPos(three, room3),
+switchPos(four, room4),
+
 location(room1),
 location(room2),
 location(room3),
 location(room4),
-location(corridor),
-shakey(room3),
+%location(corridor),
 door(room1,corridor),
 door(room2,corridor),
 door(room3,corridor),
@@ -71,5 +86,6 @@ door(room4,corridor),
 door(corridor, room1),
 door(corridor, room2),
 door(corridor, room3),
-door(corridor, room4),
+door(corridor, room4)
+
 ]).
