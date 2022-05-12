@@ -4,22 +4,18 @@
 %go(x,y)
 act(go(X,Y),
 [location(X), location(Y), door(X,Y), shakey(X), on(floor)],
-[],
+[shakey(X)],
 [shakey(Y)]
 ).
-
 %push(b,x,y)
 act(push(B,X,Y),
-[box(B), boxpos(B,X), door(X,Y), shakey(X), location(X), location(Y), handEmpty, switch(S), switchPos(S,X), switched(S,on), on(floor) ],
-[boxpos(B,X),shakey(X), handEmpty],
-[shakey(Y), boxpos(B,Y)]
+[box(B), shakey(X), boxpos(B,X), door(X,Y), switch(S), switchPos(S,X), switched(S,on), on(floor) ],
+[boxpos(B,X), shakey(X)],
+[boxpos(B,Y), shakey(Y)]
 ).
-%predicate box(...)
-%lightOn=true for shakey to find a box
-%shakey must climb onto box to switch lightswitch
 %climbUp(b)
 act(climbUp(B),
-[location(X), switch(S,on), on(floor), box(B), boxPos(B, X)],
+[shakey(X), on(floor), box(B), boxPos(B, X)],
 [on(floor)],
 [on(B)]
 ).
@@ -31,15 +27,15 @@ act(climbDown(B),
 ).
 %turnOn(s)
 act(turnOn(S),
-[location(X), box(B), switch(S,off), on(B)],
-[switch(S,X,off)],
-[switch(S,X,on)]
+[location(X), box(B), switch(S), switchPos(S,X), switched(S,off), on(B)],
+[switched(S,off)],
+[switched(S,on)]
 ).
 %turnOff(s)
 act(turnOff(S),
-[location(X), box(B), switch(S,on), on(B)],
-[switch(S,on)],
-[switch(S,off)]
+[location(X), box(B), switch(S), switchPos(S,X), switched(S,on), on(B)],
+[switched(S,on)],
+[switched(S,off)]
 ).
 %States
 goal_state(
