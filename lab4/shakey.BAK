@@ -48,9 +48,9 @@ act(turnOff(S),
 
 %States
 goal_state(
-[in(b2, room2)]%in(s, room1), switchedOff(room1), in(b2, room2)
-).                  %make switchpositions  constants
-                     %box must be at s of that room
+[switchedOn(room2)]%in(s, room1), switchedOff(room1), in(b2, room2)
+).
+
 initial_state([
 shakey(s),
 floor,
@@ -71,28 +71,11 @@ switch(s2),
 switch(s3),
 switch(s4),
 
-%switched(s1, on),
-%switched(s2, off),
-%switched(s3, off),
-%switched(s4, on),
-
 switchedOn(room1),
 switchedOff(room2),
 switchedOff(room3),
 switchedOn(room4),
 switchedOn(corridor),
-
-%switchPos(s1, room1),
-%switchPos(s2, room2),
-%switchPos(s3, room3),
-%switchPos(s4, room4),
-
-%location(underS1),
-%location(underS2),
-%location(underS3),
-%location(underS4),
-
-underSwitch,
 
 location(room1),
 location(room2),
@@ -126,8 +109,4 @@ connected(corridor, s2),
 connected(corridor, s3),
 connected(corridor, s4)
 
-%door(underS1,corridor),
-%door(underS2,corridor),
-%door(underS3,corridor),
-%door(underS4,corridor)
 ]).
