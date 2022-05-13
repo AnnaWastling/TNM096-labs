@@ -3,27 +3,27 @@
 %actions
 %go(x,y)
 act(go(X,Y),
-[door(X,Y), shakey(Shakey), in(Shakey,X), on(floor)],    %consider remove shakey as var
-[in(Shakey,X)],
-[in(Shakey,Y)]
+[connected(X,Y), in(s,X), on(floor)],    %consider remove shakey as var
+[in(s,X)],
+[in(s,Y)]
 ).
-act(pushInRoom(B,X,Y),
-[box(B), boxPos(B,X), same(Y,X), shakey(Shakey), in(Shakey,X), on(floor), switch(S), switchPos(S,X), switched(S,on)],%switch(S), switchPos(S,X), switched(S,on),  sameroom(X,Y)
-[in(Shakey, X), boxPos(B,X)],
-[in(Shakey, Y), boxPos(B,Y)]
-).
+
+%act(pushInRoom(B,X,Y),
+%[box(B), boxPos(B,X), same(Y,X), in(s,X), on(floor), switch(S), switchPos(S,X), switched(S,on)],%switch(S), switchPos(S,X), switched(S,on),  sameroom(X,Y)
+%[in(s, X), boxPos(B,X)],
+%[in(s, Y), boxPos(B,Y), underSwitch]
+%).
+
 %push(b,x,y)
 act(push(B,X,Y),
-[box(B), boxPos(B,X), door(X,Y), shakey(Shakey), in(Shakey,X), on(floor) ],%switch(S), switchPos(S,X), switched(S,on),
-[boxPos(B,X),in(Shakey,X)],
-[in(Shakey,Y), boxPos(B,Y)]
+[box(B), in(B,X), connected(X,Y), in(s,X), on(floor), switchedOn(X)],
+[in(B,X), in(s,X)],
+[in(s,Y), in(B,Y)]
 ).
-%predicate box(...)
-%lightOn=true for shakey to find a box
-%shakey must climb onto box to switch lightswitch
+
 %climbUp(b)
 act(climbUp(B),
-[shakey(Shakey), in(Shakey,LP), same(LP,X), on(floor), box(B), boxPos(B, LP)],    %location(X), location(LP),
+[in(s,X), on(floor), box(B), in(B, X)],    %location(X), location(LP), connected(Y,X),
 [on(floor)],
 [on(B)]
 ).
@@ -35,82 +35,99 @@ act(climbDown(B),
 ).
 %turnOn(s)
 act(turnOn(S),
-[location(X), box(B), switch(S), switchPos(S,X), switched(S,off), on(B), shakey(Shakey), in(Shakey, X)],
-[switched(S,off)],
-[switched(S,on)]
+[box(B), on(B), in(B, S), location(X), connected(S, X), switch(S), switchedOff(X)], %location(X), switch(S), switchPos(S,X), switched(S,off),
+[switchedOff(X)],
+[switchedOn(X)]
 ).
 %turnOff(s)
 act(turnOff(S),
-[location(X), box(B), switch(S), switchPos(S,X), switched(S,on), on(B), shakey(Shakey), in(Shakey, X)],
-[switched(S,on)],
-[switched(S,off)]
+[box(B), on(B), in(B, S), location(X), connected(S, X), switch(S), switchedOn(X)],
+[switchedOn(X)],
+[switchedOff(X)]
 ).
 
 %States
 goal_state(
-[switched(one,off)]%in(s,room1)  % %boxPos(b,room2)  %switched(one,off)
-).
-
+[in(b2, room2)]%in(s, room1), switchedOff(room1), in(b2, room2)
+).                  %make switchpositions  constants
+                     %box must be at s of that room
 initial_state([
 shakey(s),
 floor,
 on(floor),
 in(s, room3),
-box(a),
-box(b),
-box(c),
-box(d),
+box(b1),
+box(b2),
+box(b3),
+box(b4),
 
-boxPos(a, room1),
-boxPos(b, room1),
-boxPos(c, room1),
-boxPos(d, room1),
+in(b1, room1),
+in(b2, room1),
+in(b3, room1),
+in(b4, room1),
 
-switch(one),
-switch(two),
-switch(three),
-switch(four),
+switch(s1),
+switch(s2),
+switch(s3),
+switch(s4),
 
-switched(one, on),
-switched(two, off),
-switched(three, off),
-switched(four, on),
+%switched(s1, on),
+%switched(s2, off),
+%switched(s3, off),
+%switched(s4, on),
 
-switchPos(one, room1),
-switchPos(two, room2),
-switchPos(three, room3),
-switchPos(four, room4),
+switchedOn(room1),
+switchedOff(room2),
+switchedOff(room3),
+switchedOn(room4),
+switchedOn(corridor),
 
-location(s1),
-location(s2),
-location(s3),
-location(s4),
+%switchPos(s1, room1),
+%switchPos(s2, room2),
+%switchPos(s3, room3),
+%switchPos(s4, room4),
+
+%location(underS1),
+%location(underS2),
+%location(underS3),
+%location(underS4),
+
+underSwitch,
 
 location(room1),
 location(room2),
 location(room3),
 location(room4),
 
-same(room1,s1),
-same(s1,room1),
-same(room2,s2),
-same(s2,room2),
-same(room3,s3),
-same(s3,room3),
-same(room4,s4),
-same(s4,room4),
+connected(room1,s1),
+connected(room2,s2),
+connected(room3,s3),
+connected(room4,s4),
+connected(room1,corridor),
+connected(room2,corridor),
+connected(room3,corridor),
+connected(room4,corridor),
 
-door(room1,corridor),
-door(room2,corridor),
-door(room3,corridor),
-door(room4,corridor),
-door(corridor, room1),
-door(corridor, room2),
-door(corridor, room3),
-door(corridor, room4),
+connected(s1,room1),
+connected(s2,room2),
+connected(s3,room3),
+connected(s4,room4),
+connected(s1,corridor),
+connected(s2,corridor),
+connected(s3,corridor),
+connected(s4,corridor),
 
-door(one,corridor),
-door(two,corridor),
-door(three,corridor),
-door(four,corridor)
+connected(corridor, room1),
+connected(corridor, room2),
+connected(corridor, room3),
+connected(corridor, room4),
+connected(corridor, s1),
+connected(corridor, s2),
+connected(corridor, s3),
+connected(corridor, s4)
+
+%door(underS1,corridor),
+%door(underS2,corridor),
+%door(underS3,corridor),
+%door(underS4,corridor)
 ]).

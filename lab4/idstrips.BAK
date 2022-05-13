@@ -1,4 +1,4 @@
-             % STRIPS planner with iterative deepening
+% STRIPS planner with iterative deepening
 % "plan" = if no solution is found at a certain level, the level is increased by 1
 % "plan(MaxL)" = works the same as "plan" but with an upper limit MaxL for level.
 %                 If no solution is found within MaxL then no solution is found
